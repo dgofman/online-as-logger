@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" layout="vertical" creationComplete="onComplete()">
+
+	<mx:Style>
+		Application{
+			paddingTop:0;
+			paddingRight:0;
+			paddingLeft:0;
+			paddingBottom:0;
+			verticalGap:0;
+			backgroundColor:#F0F0F0;
+			debugIcon: Embed(source='/assets/debug.png');
+			infoIcon:  Embed(source='/assets/info.png');
+			warnIcon:  Embed(source='/assets/warning.png');
+			errorIcon: Embed(source='/assets/error.png');
+		}
+	</mx:Style>
+
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.collections.ArrayCollection;
+			import mx.formatters.DateFormatter;
+
+			private static const LEVEL_DEBUG:int       = 0x01;
+			private static const LEVEL_INFORMATION:int = 0x02;
+			private static const LEVEL_WARNING:int     = 0x04;
+			private static const LEVEL_ERROR:int       = 0x08;
+
+			[Bindable]
+			private var logs:ArrayCollection;
+			[Bindable]
+			private var isListen:Boolean = true;
+			[Bindable]
+			private var isDebug:Boolean = true;
+			[Bindable]
+			private var isInfo:Boolean = true;
+			[Bindable]
+			private var isWarn:Boolean = true;
+			[Bindable]
+			private var isError:Boolean = true;
+			
+			private var dateFormatter:DateFormatter;
+
+			public static var isNewWindow:Boolean = false;
+
+			private function onComplete():void{
+				dateFormatter = new DateFormatter();
+				dateFormatter.formatString = "H:NN:SS A";
+				logs = new ArrayCollection();
+
+				function resultHandler(time:String, msg:String, level:int):void{
+					if(isListen && ((level == LEVEL_DEBUG && isDebug) || (level == LEVEL_WARNING && isWarn) ||
+							(level == LEVEL_ERROR && isError) || (level == LEVEL_INFORMATION && isInfo))){
+							var info:Object = {level:level, ftime:time, time:dateFormatter.format(new Date()), message:msg};
+							logs.addItem(getInfo(info));
+							dg.verticalScrollPosition = dg.maxVerticalScrollPosition;
+					}
+				};
+				function statusHandler(status:String, message:String):void{
+						logs.addItem({level:Logger.LEVEL_INFORMATION.level, ftime:getTimer(), 
+						time:dateFormatter.format(new Date()), message:message});
+					dg.verticalScrollPosition = dg.maxVerticalScrollPosition;
+				};
+				Logger.connect(Logger.bridgeConnectionName, resultHandler, statusHandler);
+			}
+				
+			private function closeApp():void{
+				navigateToURL(new URLRequest("javascript:window.close();void(0);"),"_self");
+			}
+
+			private static function getInfo(info:Object):Object{
+				switch(info.level){
+					case LEVEL_INFORMATION:
+						info.icon = "infoIcon";
+						info.type = "Information";
+						info.color = 0x666666;
+						break;
+					case LEVEL_WARNING:
+						info.icon = "warnIcon";
+						info.type = "Warning";
+						info.color = 0x996633;
+						break;
+					case LEVEL_ERROR:
+						info.icon = "errorIcon";
+						info.type = "Error";
+						info.color = 0xFF0000;
+						break;
+					default:
+						info.icon = "debugIcon";
+						info.type = "Debug";
+						info.color = 0x000000;
+						break;
+				}
+				return info;
+			}
+
+			public static function getIcon(data:Object):Class{
+				return Application.application.getStyle(getInfo(data).icon);
+			}
+
+			public static function getColor(data:Object):uint{
+				return data.color;
+			}
+
+			public static function getMessage(data:Object):String{
+				return data.message ? data.message.split('\n').join(' ') : data.message
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%" horizontalGap="2">
+		<mx:Button toolTip="Close" icon="@Embed(source='/assets/exit.png')" height="25" click="closeApp()"/>
+		<mx:Button toolTip="Listen Trace ({isListen ? 'On' : 'Off'})" icon="@Embed(source='/assets/lunch.png')" toggle="true" selected="true" height="25" click="{isListen = isListen != true}"/>
+		<mx:Button toolTip="Clear" icon="@Embed(source='/assets/clear.png')" height="25" click="logs=new ArrayCollection()"/>
+		<mx:Button toolTip="Capture Debug ({isDebug ? 'On' : 'Off'})" icon="{getStyle('debugIcon')}" toggle="true" selected="true" height="25" click="{isDebug = isDebug != true}"/>
+		<mx:Button toolTip="Capture Information ({isInfo ? 'On' : 'Off'})" icon="{getStyle('infoIcon')}" toggle="true" selected="true" height="25" click="{isInfo = isInfo != true}"/>
+		<mx:Button toolTip="Capture Warnings ({isWarn ? 'On' : 'Off'})" icon="{getStyle('warnIcon')}" toggle="true" selected="true" height="25" click="{isWarn = isWarn != true}"/>
+		<mx:Button toolTip="Capture Errors ({isError ? 'On' : 'Off'})" icon="{getStyle('errorIcon')}" toggle="true" selected="true" height="25" click="{isError = isError != true}"/>
+	</mx:HBox>
+	<mx:HRule width="100%"/>
+	<mx:DataGrid id="dg" width="100%" height="100%" editable="true" dataProvider="{logs}" fontWeight="normal">
+		<mx:columns>
+			<mx:DataGridColumn headerText="" width="20" editable="false">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Image source="{LoggerPanel.getIcon(data)}" width="8" height="8" scaleContent="false" horizontalAlign="center"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+			<mx:DataGridColumn dataField="time" headerText="Time" textAlign="center" width="80" editable="false"/>
+			<mx:DataGridColumn dataField="ftime" headerText="Flash Time" textAlign="center" width="80" editable="false"/>
+			<mx:DataGridColumn dataField="type" headerText="Type" textAlign="center" width="80" editable="false"/>
+			<mx:DataGridColumn headerText="Meessage">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Text width="100%" text="{LoggerPanel.getMessage(data)}" color="{LoggerPanel.getColor(data)}" toolTip="{data.message}"/>
+					</mx:Component>
+				</mx:itemRenderer>
+				<mx:itemEditor>
+					<mx:Component>
+						<mx:TextInput width="100%" text="{data.message}"/>
+					</mx:Component>
+				</mx:itemEditor>
+			</mx:DataGridColumn>
+			<mx:DataGridColumn dataField="type" headerText="" width="20" editable="false" sortable="false">
+				<mx:headerRenderer>
+					<mx:Component>
+						<mx:HBox verticalAlign="middle" paddingLeft="3"> 
+							<mx:CheckBox id="new_window" toolTip="Open New Window" change="{LoggerPanel.isNewWindow=event.target.selected}"/> 
+						</mx:HBox>
+					</mx:Component>
+				</mx:headerRenderer>
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Image source="@Embed('/assets/traverse.png')" buttonMode="true" useHandCursor="true" toolTip="Traverse Data" 
+							width="8" height="8" scaleContent="false" horizontalAlign="center" click="ExternalInterface.call('writeDoc', data.message, data.time, LoggerPanel.isNewWindow)"/>
+					</mx:Component>
+				</mx:itemRenderer>	
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
+</mx:Application>
