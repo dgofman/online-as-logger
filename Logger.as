@@ -29,14 +29,14 @@ package {
 
 		private static const xpanelConnectionName:String = "_xpanel1";
 		private static const loggerConnectionName:String = "_logger1";
-		public  static const bridgeConnectionName:String = "_logger2";
+		private static const bridgeConnectionName:String = "_logger2";
 		
 		public static const LEVEL_DEBUG:Logger       = new Logger(0x01, 'log');
 		public static const LEVEL_INFORMATION:Logger = new Logger(0x02, 'info');
 		public static const LEVEL_WARNING:Logger     = new Logger(0x04, 'warn');
 		public static const LEVEL_ERROR:Logger       = new Logger(0x08, 'error');
 		
-		public static const CHAR_LIMIT:uint = 40950; //Hanled LC error: 2084 The AMF encoding of the arguments cannot exceed 40K. 
+		public static const CHAR_LIMIT:uint = 40950; //LocalConnection error: 2084 The AMF encoding of the arguments cannot exceed 40K. 
 		
 		function Logger(level:int, type:String){
 			this._level = level;
@@ -84,13 +84,14 @@ package {
 				ExternalInterface.call('console.' + logger.type, _dateFormatter.format(new Date()) + '  ' + str);
 				//Send message to Flex Logger
 				if(_loggerEventManager == null)
-					connect(loggerConnectionName, null);
-				_loggerEventManager.send(getTimer(), str, logger.level);
+					connect();
+				_loggerEventManager.$send(getTimer(), str, logger.level);
 				//Send message to XPanel
 				if(_xpanel_lc == null)
 					_xpanel_lc = new LocalConnection();
 				if(str && str.length > CHAR_LIMIT)
 					str = str.substring(0, CHAR_LIMIT); 
+				_xpanel_lc.addEventListener(StatusEvent.STATUS, function (event:StatusEvent):void{});
 				_xpanel_lc.send(xpanelConnectionName, "dispatchMessage", getTimer(), str, logger.level);
 			}
 			catch (err:Error){
@@ -99,13 +100,12 @@ package {
 		}
 		
 		//Workaround against Adobe bug: https://bugs.adobe.com/jira/browse/SDK-13565
-		public static function connect(connectionName:String, resultHandler:Function, statusHandler:Function=null):void{
+		public static function connect(resultHandler:Function=null, statusHandler:Function=null):void{
 			var message:String;
 			var ARRAY_DELIMITER:String = "\u00B6";
 			var lc:LocalConnection = new LocalConnection();
 			var lastStatus:String;
-			_loggerEventManager = {port:connectionName, result:resultHandler, status:statusHandler};
-			lc.client = _loggerEventManager;
+			lc.client = _loggerEventManager = {$result:resultHandler, $status:statusHandler};
 			lc.addEventListener(StatusEvent.STATUS, 
 				function (event:StatusEvent):void{
 					if(lastStatus != event.level && event.level == "error")
@@ -113,44 +113,44 @@ package {
 					lastStatus = event.level;
 				}
 			);
-			_loggerEventManager.send = function(...parameters):void{ //do not override
-				lc.send(this.port, "progress", "INIT_STATUS");
+			_loggerEventManager.$send = function(...parameters):void{
+				lc.send(loggerConnectionName, "$progress", "INIT_STATUS");
 				if(parameters != null){
 					var msg:String = (parameters is Array ? parameters.join(ARRAY_DELIMITER) : String(parameters));
 					while(msg.length){
-						lc.send(this.port, "progress", "SENDING_STATUS", msg.substring(0, Logger.CHAR_LIMIT));
+						lc.send(loggerConnectionName, "$progress", "SENDING_STATUS", msg.substring(0, Logger.CHAR_LIMIT));
 						msg = msg.substring(Logger.CHAR_LIMIT);
 					}
 				}
-				lc.send(this.port, "progress", "COMPLETE_STATUS");
+				lc.send(loggerConnectionName, "$progress", "COMPLETE_STATUS");
 			};
-			_loggerEventManager.progress = function(status:String, substring:String=null):void { //do not override
+			_loggerEventManager.$progress = function(status:String, substring:String=null):void {
 				if(status == "INIT_STATUS"){
 					message = "";
 				}else if(status == "COMPLETE_STATUS"){
 					var parameters:Array = message.split(ARRAY_DELIMITER);
 					if(parameters is Array && parameters.length == 3)
-						_loggerEventManager.result.apply(null, parameters);
+						_loggerEventManager.$result.apply(null, parameters);
 				}else if(status == "SENDING_STATUS"){
 					message += substring;
 				}
 			};
-			_loggerEventManager.terminate = function():void{ //do not override
+			_loggerEventManager.$terminate = function():void{
 				try{
 					lc.close();
-					if(_loggerEventManager.status is Function)
-						_loggerEventManager.status("terminate", "Connection terminated: Connection name is already being used by another SWF");
+					if(_loggerEventManager.$status is Function)
+						_loggerEventManager.$status("terminate", "Connection terminated: Connection name is already being used by another SWF");
 				}catch(error:Error){trace(error)}
 			};
 		
-			if(resultHandler != null){
+			if(resultHandler != null){ 
 				try{
 					lc.connect(loggerConnectionName);
-					if(_loggerEventManager.status is Function)
-						_loggerEventManager.status("ready", "Connection opened.");
+					if(_loggerEventManager.$status is Function)
+						_loggerEventManager.$status("ready", "Connection opened.");
 				} catch (error:ArgumentError) {
-					lc.send(loggerConnectionName, "terminate");
-					setTimeout(connect, 500, loggerConnectionName, resultHandler, statusHandler);
+					lc.send(loggerConnectionName, "$terminate");
+					setTimeout(connect, 500, resultHandler, statusHandler);
 				}
 			}
 		}

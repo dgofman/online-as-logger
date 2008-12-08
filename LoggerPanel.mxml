@@ -62,7 +62,7 @@
 						time:dateFormatter.format(new Date()), message:message});
 					dg.verticalScrollPosition = dg.maxVerticalScrollPosition;
 				};
-				Logger.connect(Logger.bridgeConnectionName, resultHandler, statusHandler);
+				Logger.connect(resultHandler, statusHandler);
 			}
 				
 			private function closeApp():void{
