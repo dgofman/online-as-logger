@@ -31,14 +31,20 @@ package {
 		private static const loggerConnectionName:String = "_logger1";
 		private static const bridgeConnectionName:String = "_logger2";
 		
-		public static const LEVEL_DEBUG:Logger       = new Logger(0x01, 'log');
-		public static const LEVEL_INFORMATION:Logger = new Logger(0x02, 'info');
-		public static const LEVEL_WARNING:Logger     = new Logger(0x04, 'warn');
-		public static const LEVEL_ERROR:Logger       = new Logger(0x08, 'error');
-		
+		public static const LOGGER_DEBUG:Logger       = new Logger(0x01, 'log');
+		public static const LOGGER_INFORMATION:Logger = new Logger(0x02, 'info');
+		public static const LOGGER_WARNING:Logger     = new Logger(0x04, 'warn');
+		public static const LOGGER_ERROR:Logger       = new Logger(0x08, 'error');
+				
 		public static const CHAR_LIMIT:uint = 40950; //LocalConnection error: 2084 The AMF encoding of the arguments cannot exceed 40K. 
 		
-		function Logger(level:int, type:String){
+		private static var _js_bridge_initialized:Boolean = false;
+		
+		public function Logger(level:int=-1, type:String=null){
+			if(_js_bridge_initialized == false && ExternalInterface.available){
+				ExternalInterface.addCallback("js_trace", js_trace);
+				_js_bridge_initialized = true;
+			}
 			this._level = level;
 			this._type = type;
 
@@ -58,23 +64,34 @@ package {
 		}
 		
 		public static function debug(o:Object):void{
-			_send(LEVEL_DEBUG, o);
+			_send(LOGGER_DEBUG, o);
 		}
 
 		public static function info(o:Object):void{
-			_send(LEVEL_INFORMATION, o);
+			_send(LOGGER_INFORMATION, o);
 		}
 
 		public static function error(o:Object):void{
-			_send(LEVEL_ERROR, o);
+			_send(LOGGER_ERROR, o);
 		}
 
 		public static function warn(o:Object):void{
-			_send(LEVEL_WARNING, o);
+			_send(LOGGER_WARNING, o);
 		}
 
 		public static function params(... args):void{
-			_send(LEVEL_DEBUG, (args is Array ? args.join(', ') : args));
+			_send(LOGGER_DEBUG, (args is Array ? args.join(', ') : args));
+		}
+		
+		private function js_trace(type:String="log", o:Object=null):void{
+			var loggers:Array = [LOGGER_DEBUG, LOGGER_INFORMATION, LOGGER_WARNING, LOGGER_ERROR];
+			for(var i:uint = 0; i < loggers.length; i++){
+				if(loggers[i].type == type){
+					_send(loggers[i] as Logger, o);
+					return;
+				}
+			}
+			ExternalInterface.call('console.' + type, _dateFormatter.format(new Date()) + '  ' + o);
 		}
 
 		private static function _send(logger:Logger, o:Object):void{
