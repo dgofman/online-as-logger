@@ -22,10 +22,10 @@
 			import mx.collections.ArrayCollection;
 			import mx.formatters.DateFormatter;
 
-			private static const LEVEL_DEBUG:int       = 0x01;
-			private static const LEVEL_INFORMATION:int = 0x02;
-			private static const LEVEL_WARNING:int     = 0x04;
-			private static const LEVEL_ERROR:int       = 0x08;
+			private static const LOGGER__DEBUG:int       = 0x01;
+			private static const LOGGER__INFORMATION:int = 0x02;
+			private static const LOGGER__WARNING:int     = 0x04;
+			private static const LOGGER__ERROR:int       = 0x08;
 
 			[Bindable]
 			private var logs:ArrayCollection;
@@ -50,15 +50,15 @@
 				logs = new ArrayCollection();
 
 				function resultHandler(time:String, msg:String, level:int):void{
-					if(isListen && ((level == LEVEL_DEBUG && isDebug) || (level == LEVEL_WARNING && isWarn) ||
-							(level == LEVEL_ERROR && isError) || (level == LEVEL_INFORMATION && isInfo))){
+					if(isListen && ((level == LOGGER__DEBUG && isDebug) || (level == LOGGER__WARNING && isWarn) ||
+							(level == LOGGER__ERROR && isError) || (level == LOGGER__INFORMATION && isInfo))){
 							var info:Object = {level:level, ftime:time, time:dateFormatter.format(new Date()), message:msg};
 							logs.addItem(getInfo(info));
 							dg.verticalScrollPosition = dg.maxVerticalScrollPosition;
 					}
 				};
 				function statusHandler(status:String, message:String):void{
-						logs.addItem({level:Logger.LEVEL_INFORMATION.level, ftime:getTimer(), 
+						logs.addItem({level:Logger.LOGGER_INFORMATION.level, ftime:getTimer(), 
 						time:dateFormatter.format(new Date()), message:message});
 					dg.verticalScrollPosition = dg.maxVerticalScrollPosition;
 				};
@@ -71,17 +71,17 @@
 
 			private static function getInfo(info:Object):Object{
 				switch(info.level){
-					case LEVEL_INFORMATION:
+					case LOGGER__INFORMATION:
 						info.icon = "infoIcon";
 						info.type = "Information";
 						info.color = 0x666666;
 						break;
-					case LEVEL_WARNING:
+					case LOGGER__WARNING:
 						info.icon = "warnIcon";
 						info.type = "Warning";
 						info.color = 0x996633;
 						break;
-					case LEVEL_ERROR:
+					case LOGGER__ERROR:
 						info.icon = "errorIcon";
 						info.type = "Error";
 						info.color = 0xFF0000;
