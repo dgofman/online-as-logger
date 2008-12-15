@@ -40,7 +40,7 @@ package {
 		
 		private static var _js_bridge_initialized:Boolean = false;
 		
-		public function Logger(level:int=-1, type:String=null){
+		function Logger(level:int=-1, type:String=null){
 			if(_js_bridge_initialized == false && ExternalInterface.available){
 				ExternalInterface.addCallback("js_trace", js_trace);
 				_js_bridge_initialized = true;
