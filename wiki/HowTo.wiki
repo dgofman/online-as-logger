@@ -4,7 +4,7 @@
 Open browser window, in the Address bar enter URL:
 http://online-as-logger.googlecode.com/svn/trunk/demo/Logger.html
 
-If you want to open AS Logger in the new window copy pastes this JavaScript:
+If you want to open AS Logger in the new window copy pastes this _JavaScript_:
 
 {{{
 javascript:(function(){var o=window.open('http://online-as-logger.googlecode.com/svn/trunk/demo/Logger.html', 'logger','width=750,height=450,resizable=1')})()
@@ -29,7 +29,7 @@ Now in your MXML file you can use Logger class from any places.
 
 = Use AS Logger in HTML file =
 
-After HTML body declaration, please add JavaScript tag to enabled AS Logger access from HTML page.
+After HTML body declaration, please add JavaScript tag to enabled _AS Logger_ access from HTML page.
 
 {{{
 <BODY>
@@ -38,7 +38,7 @@ After HTML body declaration, please add JavaScript tag to enabled AS Logger acce
 …
 <BODY>
 }}}
-Now add these lines for testing JavaScript to AS Logger communication. Before to run your HTML file, don’t forget to open AS Logger panel to view your outputs.
+Now add these lines for testing _JavaScript_ to _AS Logger_ communication. Before to run your HTML file, don’t forget to open _AS Logger_ panel to view your outputs.
 {{{
 <SCRIPT LANGUAGE="JavaScript">
 	setInterval(function(){Logger.info(new Date())}, 1000);
@@ -51,5 +51,4 @@ Now add these lines for testing JavaScript to AS Logger communication. Before to
 
   * Another tool what I am using on Windows OS is Xpanel [http://www.docsultant.com/site2/articles/flex_xpanel.html]. 
 
-  * You can also use ThunderBolt as well [http://code.google.com/p/flash-thunderbolt/]
-
+  * You can also use _ThunderBolt_ as well [http://code.google.com/p/flash-thunderbolt/]
