@@ -1,0 +1,55 @@
+#labels Logger,JavaScript,Flex,ActionScript,Flash,MXML,HTML,FireFox,InternetExplorer
+= Run AS Logger online =
+
+Open browser window, in the Address bar enter URL:
+http://online-as-logger.googlecode.com/svn/trunk/demo/Logger.html
+
+If you want to open AS Logger in the new window copy pastes this JavaScript:
+
+{{{
+javascript:(function(){var o=window.open('http://online-as-logger.googlecode.com/svn/trunk/demo/Logger.html', 'logger','width=750,height=450,resizable=1')})()
+}}}
+
+You can also add this URL for your convenience into browser Bookmark – Mozilla Firefox or Favorites in Internet Explorer.
+
+_Note:_ You have to disabled Pop-up blocker at this time or prevent this site-script for opening in pop-up window.
+
+= Use AS Logger in MXML file =
+
+Copy Logger.as file into your project source root. 
+Now in your MXML file you can use Logger class from any places.
+
+ Example:
+{{{
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+	applicationComplete="Logger.debug('Application initialzed')">
+</mx:Application>
+}}}
+
+= Use AS Logger in HTML file =
+
+After HTML body declaration, please add JavaScript tag to enabled AS Logger access from HTML page.
+
+{{{
+<BODY>
+<script type="text/javascript" src="http://online-as-logger.googlecode.com/svn/trunk/demo/Logger.js"></script>
+
+…
+<BODY>
+}}}
+Now add these lines for testing JavaScript to AS Logger communication. Before to run your HTML file, don’t forget to open AS Logger panel to view your outputs.
+{{{
+<SCRIPT LANGUAGE="JavaScript">
+	setInterval(function(){Logger.info(new Date())}, 1000);
+</SCRIPT> 
+}}}
+
+= View output using third party components =
+
+  * You can you run your page on Mozilla Firefox, but before you need to install Firebug Add-on [https://addons.mozilla.org/en-US/firefox/addon/1843]
+
+  * Another tool what I am using on Windows OS is Xpanel [http://www.docsultant.com/site2/articles/flex_xpanel.html]. 
+
+  * You can also use ThunderBolt as well [http://code.google.com/p/flash-thunderbolt/]
+
