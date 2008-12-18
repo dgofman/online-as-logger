@@ -22,7 +22,7 @@ var Logger = new function(){
 		try{
 			var logger = (document.all ? window["ASLogger"] : document["ASLogger"]);
 			if(logger)
-				logger.js_trace(status ? status : "log", o);
+				logger.js_trace(status ? status : "log", String(o));
 		}catch(e){}
 	};
 	this.debug = function(o){ Logger.trace(o, "log")  };
