@@ -47,7 +47,7 @@ Now add these lines for testing Javascript to _AS Logger_ communication. Before 
 
 = View output using third party components =
 
-  * You can run your page on Mozilla Firefox, but before that you need to install Firebug Add-on [https://addons.mozilla.org/en-US/firefox/addon/1843]
+  * You can view logs in Mozilla Firefox Console, but before that you need to install Firebug Add-on [https://addons.mozilla.org/en-US/firefox/addon/1843]
 
   * Another tool that I am using on Windows OS is Xpanel [http://www.docsultant.com/site2/articles/flex_xpanel.html]. 
 
