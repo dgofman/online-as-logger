@@ -1,23 +1,23 @@
 #labels Logger,JavaScript,Flex,ActionScript,Flash,MXML,HTML,FireFox,InternetExplorer
 = Run AS Logger online =
 
-Open browser window, in the Address bar enter URL:
+Open the browser window, in the Address bar enter this URL:
 http://online-as-logger.googlecode.com/svn/trunk/demo/Logger.html
 
-If you want to open AS Logger in the new window copy pastes this Javascript:
+If you want to open AS Logger in the new window copy paste this Javascript:
 
 {{{
 javascript:(function(){var o=window.open('http://online-as-logger.googlecode.com/svn/trunk/demo/Logger.html', 'logger','width=750,height=450,resizable=1')})()
 }}}
 
-You can also add this URL for your convenience into browser Bookmark – Mozilla Firefox or Favorites in Internet Explorer.
+You can also add this URL for your convenience into browser's Bookmarks (Mozilla Firefox) or Favorites (Internet Explorer).
 
-_Note:_ You have to disabled Pop-up blocker at this time or prevent this site-script for opening in pop-up window.
+_Note:_ You have to disable Pop-up blocker at this time or allow this site-script for opening in pop-up window.
 
 = Use AS Logger in MXML file =
 
 Copy Logger.as file into your project source root. 
-Now in your MXML file you can use Logger class from any places.
+Now in your MXML file you can use Logger class from any place.
 
  Example:
 {{{
@@ -29,7 +29,7 @@ Now in your MXML file you can use Logger class from any places.
 
 = Use AS Logger in HTML file =
 
-After HTML body declaration, please add Javascript tag to enabled _AS Logger_ access from HTML page.
+After HTML body declaration, please add Javascript tag to enable _AS Logger_ access from HTML page.
 
 {{{
 <BODY>
@@ -38,7 +38,7 @@ After HTML body declaration, please add Javascript tag to enabled _AS Logger_ ac
 …
 <BODY>
 }}}
-Now add these lines for testing Javascript to _AS Logger_ communication. Before to run your HTML file, don’t forget to open _AS Logger_ panel to view your outputs.
+Now add these lines for testing Javascript to _AS Logger_ communication. Before running your HTML file, don’t forget to open _AS Logger_ panel to view your outputs.
 {{{
 <SCRIPT LANGUAGE="JavaScript">
 	setInterval(function(){Logger.info(new Date())}, 1000);
@@ -47,8 +47,8 @@ Now add these lines for testing Javascript to _AS Logger_ communication. Before 
 
 = View output using third party components =
 
-  * You can you run your page on Mozilla Firefox, but before you need to install Firebug Add-on [https://addons.mozilla.org/en-US/firefox/addon/1843]
+  * You can run your page on Mozilla Firefox, but before that you need to install Firebug Add-on [https://addons.mozilla.org/en-US/firefox/addon/1843]
 
   * Another tool that I am using on Windows OS is Xpanel [http://www.docsultant.com/site2/articles/flex_xpanel.html]. 
 
-  * You can also use Thunder-Bolt as well [http://code.google.com/p/flash-thunderbolt/]
+  * You can use Thunder-Bolt as well [http://code.google.com/p/flash-thunderbolt/]
