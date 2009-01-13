@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" viewSourceURL="srcview/index.html">
 	<mx:Script>
 		<![CDATA[
 			import mx.rpc.events.ResultEvent;
@@ -15,8 +15,8 @@
 				if(event.result is XMLList && event.result.listLatLonOut.length()){
 					var xml:XML = new XML(unescape(event.result.listLatLonOut));
 					var latLon:String = xml.latLonList[0];
-					if(latLon != null && latLon.indexOf(',') != -1){
-						var params:Array = latLon.split(',');
+					if(latLon != null && latLon.indexOf(",") != -1){
+						var params:Array = latLon.split(",");
 						Logger.params(params);
 						latitude = params[0];
 						longitude = params[1];
