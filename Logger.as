@@ -31,10 +31,10 @@ package {
 		private static const loggerConnectionName:String = "_logger1";
 		private static const bridgeConnectionName:String = "_logger2";
 		
-		public static const LOGGER_DEBUG:Logger       = new Logger(0x01, 'log');
-		public static const LOGGER_INFORMATION:Logger = new Logger(0x02, 'info');
-		public static const LOGGER_WARNING:Logger     = new Logger(0x04, 'warn');
-		public static const LOGGER_ERROR:Logger       = new Logger(0x08, 'error');
+		public static const LOGGER_DEBUG:Logger       = new Logger(0x01, "log");
+		public static const LOGGER_INFORMATION:Logger = new Logger(0x02, "info");
+		public static const LOGGER_WARNING:Logger     = new Logger(0x04, "warn");
+		public static const LOGGER_ERROR:Logger       = new Logger(0x08, "error");
 				
 		public static const CHAR_LIMIT:uint = 40950; //LocalConnection error: 2084 The AMF encoding of the arguments cannot exceed 40K. 
 		
@@ -48,7 +48,7 @@ package {
 			this._level = level;
 			this._type = type;
 
-			_dateFormatter.formatString = 'H:NN:SS A';
+			_dateFormatter.formatString = "H:NN:SS A";
 		}
 		
 		public function get level():int{
@@ -80,7 +80,7 @@ package {
 		}
 
 		public static function params(... args):void{
-			_send(LOGGER_DEBUG, (args is Array ? args.join(', ') : args));
+			_send(LOGGER_DEBUG, (args is Array ? args.join(", ") : args));
 		}
 		
 		private function js_trace(type:String="log", o:Object=null):void{
@@ -91,14 +91,14 @@ package {
 					return;
 				}
 			}
-			ExternalInterface.call('console.' + type, _dateFormatter.format(new Date()) + '  ' + o);
+			ExternalInterface.call("console." + type, _dateFormatter.format(new Date()) + "  " + o);
 		}
 
 		private static function _send(logger:Logger, o:Object):void{
 			try{
-				var str:String = (typeof o == 'xml' ? o.toXMLString() : ObjectUtil.toString(o));
+				var str:String = (typeof o == "xml" ? o.toXMLString() : ObjectUtil.toString(o));
 				//Send message to FireBug console
-				ExternalInterface.call('console.' + logger.type, _dateFormatter.format(new Date()) + '  ' + str);
+				ExternalInterface.call("console." + logger.type, _dateFormatter.format(new Date()) + "  " + str);
 				//Send message to Flex Logger
 				if(_loggerEventManager == null)
 					connect();
