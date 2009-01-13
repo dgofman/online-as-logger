@@ -23,7 +23,7 @@ Now in your MXML file you can use Logger class from any place.
 {{{
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
-	applicationComplete="Logger.debug('Application initialzed')">
+	applicationComplete="Logger.debug(event.type)">
 </mx:Application>
 }}}
 
