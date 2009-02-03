@@ -145,7 +145,7 @@
 			<mx:DataGridColumn dataField="time" headerText="Time" textAlign="center" width="80" editable="false"/>
 			<mx:DataGridColumn dataField="ftime" headerText="Flash Time" textAlign="center" width="80" editable="false"/>
 			<mx:DataGridColumn dataField="type" headerText="Type" textAlign="center" width="80" editable="false"/>
-			<mx:DataGridColumn headerText="Meessage">
+			<mx:DataGridColumn headerText="Message">
 				<mx:itemRenderer>
 					<mx:Component>
 						<mx:Text width="100%" text="{LoggerPanel.getMessage(data)}" color="{LoggerPanel.getColor(data)}" toolTip="{data.message}"/>
