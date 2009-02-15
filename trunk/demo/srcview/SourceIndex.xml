@@ -5,6 +5,7 @@
 		<node label="assets">
 			<node icon="imageIcon" label="clear.png" url="source/assets/clear.png.html"/>
 			<node icon="imageIcon" label="debug.png" url="source/assets/debug.png.html"/>
+			<node icon="imageIcon" label="document.png" url="source/assets/document.png.html"/>
 			<node icon="imageIcon" label="error.png" url="source/assets/error.png.html"/>
 			<node icon="imageIcon" label="exit.png" url="source/assets/exit.png.html"/>
 			<node icon="imageIcon" label="info.png" url="source/assets/info.png.html"/>
@@ -17,7 +18,9 @@
 		<node icon="packageIcon" label="sample" expanded="true">
 			<node icon="mxmlIcon" label="FlexLoggerSample.mxml" url="source/sample/FlexLoggerSample.mxml.html"/>
 		</node>
+		<node icon="mxmlAppIcon" selected="true" label="FlexLoggerSample.mxml" url="source/FlexLoggerSample.mxml.html"/>
 		<node icon="actionScriptIcon" label="Logger.as" url="source/Logger.as.html"/>
-		<node icon="mxmlAppIcon" selected="true" label="LoggerPanel.mxml" url="source/LoggerPanel.mxml.html"/>
+		<node icon="htmlIcon" label="Logger.html" url="source/Logger.html"/>
+		<node icon="mxmlIcon" label="LoggerPanel.mxml" url="source/LoggerPanel.mxml.html"/>
 	</nodes>
 </index>
