@@ -45,6 +45,7 @@
 			[Embed(source="/assets/info.png")]      public static const infoIcon:Class;
 			[Embed(source="/assets/warning.png")]   public static const warningIcon:Class;
 			[Embed(source="/assets/error.png")]     public static const errorIcon:Class;
+			[Embed(source="/assets/document.png")]  public static const documentIcon:Class;
 			[Embed(source="/assets/traverse.png")]  public static const traverseIcon:Class;
 
 			private const toggleOn:String = "On";
@@ -52,8 +53,6 @@
 			
 			private var dateFormatter:DateFormatter;
 
-			public static var isNewWindow:Boolean = false;
-		
 			private function onComplete():void{
 				dateFormatter = new DateFormatter();
 				dateFormatter.formatString = "H:NN:SS A";
@@ -157,18 +156,19 @@
 					</mx:Component>
 				</mx:itemEditor>
 			</mx:DataGridColumn>
-			<mx:DataGridColumn dataField="type" headerText="" width="20" editable="false" sortable="false">
-				<mx:headerRenderer>
+			<mx:DataGridColumn width="20" editable="false" sortable="false">
+				<mx:itemRenderer>
 					<mx:Component>
-						<mx:HBox verticalAlign="middle" paddingLeft="3"> 
-							<mx:CheckBox id="new_window" toolTip="Open New Window" change="{LoggerPanel.isNewWindow=event.target.selected}"/> 
-						</mx:HBox>
+						<mx:Image source="{LoggerPanel.documentIcon}" buttonMode="true" useHandCursor="true" toolTip="Show Log" 
+							width="8" height="8" scaleContent="false" horizontalAlign="center" click="ExternalInterface.call('writeDoc', data.message, data.time, false)"/>
 					</mx:Component>
-				</mx:headerRenderer>
+				</mx:itemRenderer>	
+			</mx:DataGridColumn>
+			<mx:DataGridColumn width="20" editable="false" sortable="false">
 				<mx:itemRenderer>
 					<mx:Component>
 						<mx:Image source="{LoggerPanel.traverseIcon}" buttonMode="true" useHandCursor="true" toolTip="Traverse Data" 
-							width="8" height="8" scaleContent="false" horizontalAlign="center" click="ExternalInterface.call('writeDoc', data.message, data.time, LoggerPanel.isNewWindow)"/>
+							width="8" height="8" scaleContent="false" horizontalAlign="center" click="ExternalInterface.call('writeDoc', data.message, data.time, true)"/>
 					</mx:Component>
 				</mx:itemRenderer>	
 			</mx:DataGridColumn>
