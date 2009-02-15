@@ -7,33 +7,36 @@ body { margin: 0px; overflow:hidden }
 </style>
 </head>
 <body scroll="no">
-<div align="center">
-	<div id="flashcontent">
-		Please wait...
-	</div>
-</div>
 <script language="JavaScript" type="text/javascript">
 <!--
 	var win;
-
-	var flashParams = {
-		allowFullScreen:true,
-		align:"middle",
-		quality:"high",
-		bgcolor:"#FFFFFF",
-		allowScriptAccess:"sameDomain",
-		type:"application/x-shockwave-flash",
-		src:"LoggerPanel.swf?version=1.0"
-	};
-
-	var output = flashParamsToString("LoggerPanel", flashParams);
-	var div = document.getElementById("flashcontent");
-	if(div){
-		div.innerHTML = output;
+	
+	var loc = window.location.toString();
+	var pos = loc.indexOf("#");
+	document.open();
+	if(pos != -1){
+		document.write(unescape(loc.substring(pos + 1)));
 	}else{
-		document.write(output);
+		var flashParams = {
+			allowFullScreen:true,
+			align:"middle",
+			quality:"high",
+			bgcolor:"#FFFFFF",
+			allowScriptAccess:"sameDomain",
+			type:"application/x-shockwave-flash",
+			src:"LoggerPanel.swf?version=1.0"
+		};
+	
+		var output = flashParamsToString("LoggerPanel", flashParams);
+		var div = document.getElementById("flashcontent");
+		if(div){
+			div.innerHTML = output;
+		}else{
+			document.write(output);
+		}
 	}
-
+	document.close();
+	
 	function flashParamsToString(id, flashParams){
 		var str = 'width="100%" height="100%" ';
 		if (document.all)
@@ -68,30 +71,33 @@ body { margin: 0px; overflow:hidden }
 		}
 	}
 
-	function writeDoc(value, time, newWindow){
-		var doc;
-		try{
-			var xmlDoc;
-			value = value.replace(/^\"|\"$/g, "");
-			if(document.all){
-				xmlDoc = new ActiveXObject("MSXML2.DOMDocument");
-				xmlDoc.loadXML(value);
-			}else{
-				xmlDoc = new DOMParser().parseFromString(value, 'text/xml');
+	function writeDoc(value, time, traverse){
+		var doc = "<pre>" + new String(value) + "</pre>";
+		if(traverse == true){
+			try{
+				var xmlDoc;
+				value = value.replace(/^\"|\"$/g, "");
+				if(document.all){
+					xmlDoc = new ActiveXObject("MSXML2.DOMDocument");
+					xmlDoc.loadXML(value);
+				}else{
+					xmlDoc = new DOMParser().parseFromString(value, 'text/xml');
+				}
+				var tree = [];
+				var node = xmlDoc.documentElement;
+				if(node && node.tagName != "parsererror"){
+					traverse(node, tree);
+					doc = tree.join('');
+				}else{
+					doc = "<pre>" + new String(value) + "</pre>";
+				}
+			}catch(e){
 			}
-			var tree = [];
-			var node = xmlDoc.documentElement;
-			if(node && node.tagName != "parsererror"){
-				traverse(node, tree);
-				doc = tree.join('');
-			}else{
-				doc = "<pre>" + new String(value) + "</pre>";
-			}
-		}catch(e){
-			doc = "<pre>" + new String(value) + "</pre>";
 		}
-		if(newWindow == true || !win || win.closed)
+		if(!win || win.closed)
 			win = window.open("about:blank" , "details" + new Date().getTime(), "");
+		win.document.write("<title>Log: " + time + "</title>");
+		win.document.write("<a href='#" + doc + "' target='_blank' onclick='return true;'>Open in a new window</a>");
 		win.document.write("<title>Log: " + time + "</title>" + doc);
 		win.document.close();
 		if (window.focus)
