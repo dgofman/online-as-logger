@@ -2,21 +2,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Logger Panel</title>
-<style>
-body { margin: 0px; overflow:hidden }
-</style>
 </head>
 <body scroll="no">
 <script language="JavaScript" type="text/javascript">
 <!--
-	var win;
-	
-	var loc = window.location.toString();
-	var pos = loc.indexOf("#");
-	document.open();
-	if(pos != -1){
-		var doc = unescape(loc.substring(pos + 1));
-		document.write(doc);
+	var loc = unescape(window.location.toString());
+	var pos1 = loc.indexOf("#");
+	document.open("text/html", "replace");
+	if(pos1 != -1){
+		var pos2 =  loc.indexOf("&", pos1);
+		document.title = "Copy Log " + loc.substring(pos1 + 1, pos2);
+		document.write(loc.substring(pos2 + 1));
 	}else{
 		var flashParams = {
 			allowFullScreen:true,
@@ -27,14 +23,9 @@ body { margin: 0px; overflow:hidden }
 			type:"application/x-shockwave-flash",
 			src:"LoggerPanel.swf?version=1.0"
 		};
-	
+
 		var output = flashParamsToString("LoggerPanel", flashParams);
-		var div = document.getElementById("flashcontent");
-		if(div){
-			div.innerHTML = output;
-		}else{
-			document.write(output);
-		}
+		document.write(output);
 	}
 	document.close();
 	
@@ -71,7 +62,8 @@ body { margin: 0px; overflow:hidden }
 			tree.push("<ul><li><font color='#006600'><b>" + node.data + "</b></font></li></ul>");
 		}
 	}
-
+	
+	var win;
 	function writeDoc(value, time, doTraverse){
 		var doc;
 		value = value.replace(/^\"|\"$/g, "");
@@ -96,9 +88,9 @@ body { margin: 0px; overflow:hidden }
 		}
 		if(!win || win.closed)
 			win = window.open("about:blank" , "details" + new Date().getTime(), "");
-		win.document.write("<title>Log: " + time + "</title>");
-		win.document.write("<a href='#" + escape(doc) + "' target='_blank' onclick='return true;'>Open in a new window</a>");
-		win.document.write("<title>Log: " + time + "</title>" + doc);
+		win.document.write("<html><title>Log " + time + "</title><body>");
+		win.document.write("<a href='#" + time + "&" + escape(doc) + "' target='_blank' onclick='return true;'>Open in a new window</a>");
+		win.document.write(doc + "</body></html>");
 		win.document.close();
 		if (window.focus)
 			win.focus();
