@@ -1,0 +1,1 @@
+Copy Logger.as into sample directory and run compile.bat
