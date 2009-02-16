@@ -73,10 +73,10 @@ body { margin: 0px; overflow:hidden }
 
 	function writeDoc(value, time, traverse){
 		var doc;
+		value = value.replace(/^\"|\"$/g, "");
 		if(traverse == true){
 			try{
 				var xmlDoc;
-				value = value.replace(/^\"|\"$/g, "");
 				if(document.all){
 					xmlDoc = new ActiveXObject("MSXML2.DOMDocument");
 					xmlDoc.loadXML(value);
