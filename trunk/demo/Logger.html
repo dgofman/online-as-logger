@@ -71,10 +71,10 @@ body { margin: 0px; overflow:hidden }
 		}
 	}
 
-	function writeDoc(value, time, traverse){
+	function writeDoc(value, time, doTraverse){
 		var doc;
 		value = value.replace(/^\"|\"$/g, "");
-		if(traverse == true){
+		if(doTraverse == true){
 			try{
 				var xmlDoc;
 				if(document.all){
