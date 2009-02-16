@@ -15,7 +15,8 @@ body { margin: 0px; overflow:hidden }
 	var pos = loc.indexOf("#");
 	document.open();
 	if(pos != -1){
-		document.write(unescape(unescape(loc.substring(pos + 1))));
+		var doc = unescape(loc.substring(pos + 1));
+		document.write(doc);
 	}else{
 		var flashParams = {
 			allowFullScreen:true,
