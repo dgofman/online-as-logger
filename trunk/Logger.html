@@ -67,8 +67,7 @@ body { margin: 0px; overflow:hidden }
 	}
 
 	function writeDoc(value, time, traverse){
-		//var doc = "<pre>" + new String(value) + "</pre>";
-		alert(value + "+"+ time + "+"+ traverse);
+		var doc;
 		if(traverse == true){
 			try{
 				var xmlDoc;
@@ -89,6 +88,8 @@ body { margin: 0px; overflow:hidden }
 				}
 			}catch(e){
 			}
+		}else{
+			doc = "<pre>" + new String(value) + "</pre>";
 		}
 		if(!win || win.closed)
 			win = window.open("about:blank" , "details" + new Date().getTime(), "");
