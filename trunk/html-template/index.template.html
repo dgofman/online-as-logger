@@ -66,12 +66,12 @@ body { margin: 0px; overflow:hidden }
 		}
 	}
 
-	function writeDoc(value, time, traverse){
+	function writeDoc(value, time, doTraverse){
 		var doc;
-		if(traverse == true){
+		value = value.replace(/^\"|\"$/g, "");
+		if(doTraverse == true){
 			try{
 				var xmlDoc;
-				value = value.replace(/^\"|\"$/g, "");
 				if(document.all){
 					xmlDoc = new ActiveXObject("MSXML2.DOMDocument");
 					xmlDoc.loadXML(value);
@@ -95,7 +95,7 @@ body { margin: 0px; overflow:hidden }
 		if(!win || win.closed)
 			win = window.open("about:blank" , "details" + new Date().getTime(), "");
 		win.document.write("<title>Log: " + time + "</title>");
-		win.document.write("<a href='#" + doc + "' target='_blank' onclick='return true;'>Open in a new window</a>");
+		win.document.write("<a href='#" + escape(doc) + "' target='_blank' onclick='return true;'>Open in a new window</a>");
 		win.document.write("<title>Log: " + time + "</title>" + doc);
 		win.document.close();
 		if (window.focus)
