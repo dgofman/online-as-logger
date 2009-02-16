@@ -76,6 +76,7 @@ body { margin: 0px; overflow:hidden }
 	function writeDoc(value, time, doTraverse){
 		var doc;
 		value = value.replace(/^\"|\"$/g, "");
+		doc = "<pre>" + value.replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + "</pre>";
 		if(doTraverse == true){
 			try{
 				var xmlDoc;
@@ -90,14 +91,9 @@ body { margin: 0px; overflow:hidden }
 				if(node && node.tagName != "parsererror"){
 					traverse(node, tree);
 					doc = tree.join('');
-				}else{
-					doc = "<pre>" + new String(value) + "</pre>";
 				}
 			}catch(e){
-				doc = "<pre>" + new String(value) + "</pre>";
 			}
-		}else{
-			doc = "<pre>" + new String(value) + "</pre>";
 		}
 		if(!win || win.closed)
 			win = window.open("about:blank" , "details" + new Date().getTime(), "");
