@@ -98,17 +98,19 @@ white-space: pre-line;
 			}catch(e){
 			}
 		}
-		if(win && !win.closed)
-			win.close();
-		win = window.open("about:blank" , "details" + new Date().getTime(), "");
-		win.document.write("<html><title>Log " + time + "</title>");
-		win.document.write("<body><a href='#' target='_blank' onclick='return true;'>Open in a new window</a>");
-		win.document.write("&nbsp;|&nbsp;<a href='#?wordwrap' target='_blank' onclick='return true;'>Word Wrap</a>");
-		win.document.write("<pre>" + doc + "</pre></body></html>");
-		win.document.close();
-		win.document.doc = doc;
-		if (window.focus)
-			win.focus();
+		try{
+			if(win && !win.closed)
+				win.close();
+			win = window.open("about:blank" , "details" + new Date().getTime(), "");
+			win.document.write("<html><title>Log " + time + "</title>");
+			win.document.write("<body><a href='#' target='_blank' onclick='return true;'>Open in a new window</a>");
+			win.document.write("&nbsp;|&nbsp;<a href='#?wordwrap' target='_blank' onclick='return true;'>Word Wrap</a>");
+			win.document.write("<pre>" + doc + "</pre></body></html>");
+			win.document.close();
+			win.document.doc = doc;
+			if (window.focus)
+				win.focus();
+		}catch(e){ win = null; }
 	}
 // -->
 </script>
