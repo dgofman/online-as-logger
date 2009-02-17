@@ -2,6 +2,18 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Logger Panel</title>
+<style>
+.preWrap{
+white-space: pre-wrap; /* css-3 */
+white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+white-space: -pre-wrap; /* Opera 4-6 */
+white-space: -o-pre-wrap; /* Opera 7 */
+word-wrap: break-word; /* Internet Explorer 5.5+ */
+white-space: pre;
+white-space: -hp-pre-wrap; /* HP Printers */
+white-space: pre-line;
+}
+</style>
 </head>
 <body scroll="no">
 <script language="JavaScript" type="text/javascript">
@@ -9,7 +21,11 @@
 	document.open("text/html", "replace");
 	if(opener != null && opener.document.doc != undefined){
 		document.title = opener.document.title;
-		document.write(opener.document.doc);
+		if(window.location.toString().indexOf("wordwrap") != -1){
+			document.write("<pre class='preWrap'>" + opener.document.doc + "</pre>");
+		}else{
+			document.write("<pre>" + opener.document.doc + "</pre>");
+		}
 	}else{
 		var flashParams = {
 			allowFullScreen:true,
@@ -63,7 +79,7 @@
 	var win;
 	function writeDoc(value, time, doTraverse){
 		value = value.replace(/^\"|\"$/g, "");
-		var doc = "<pre>" + value.replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + "</pre>";
+		var doc = value.replace(/\</g, "&lt;").replace(/\>/g, "&gt;");
 		if(doTraverse == true){
 			try{
 				var xmlDoc;
@@ -87,7 +103,8 @@
 		win = window.open("about:blank" , "details" + new Date().getTime(), "");
 		win.document.write("<html><title>Log " + time + "</title>");
 		win.document.write("<body><a href='#' target='_blank' onclick='return true;'>Open in a new window</a>");
-		win.document.write(doc + "</body></html>");
+		win.document.write("&nbsp;|&nbsp;<a href='#?wordwrap' target='_blank' onclick='return true;'>Word Wrap</a>");
+		win.document.write("<pre>" + doc + "</pre></body></html>");
 		win.document.close();
 		win.document.doc = doc;
 		if (window.focus)
