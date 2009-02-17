@@ -18,9 +18,8 @@
 		<node icon="packageIcon" label="sample" expanded="true">
 			<node icon="mxmlIcon" label="FlexLoggerSample.mxml" url="source/sample/FlexLoggerSample.mxml.html"/>
 		</node>
-		<node icon="mxmlAppIcon" selected="true" label="FlexLoggerSample.mxml" url="source/FlexLoggerSample.mxml.html"/>
 		<node icon="actionScriptIcon" label="Logger.as" url="source/Logger.as.html"/>
 		<node icon="htmlIcon" label="Logger.html" url="source/Logger.html"/>
-		<node icon="mxmlIcon" label="LoggerPanel.mxml" url="source/LoggerPanel.mxml.html"/>
+		<node icon="mxmlAppIcon" selected="true" label="LoggerPanel.mxml" url="source/LoggerPanel.mxml.html"/>
 	</nodes>
 </index>
