@@ -15,7 +15,7 @@ white-space: pre-line;
 }
 </style>
 </head>
-<body scroll="no">
+<body>
 <script language="JavaScript" type="text/javascript">
 <!--
 	document.open("text/html", "replace");
@@ -23,9 +23,9 @@ white-space: pre-line;
 		var doc = opener.document.doc;
 		document.title = opener.document.title;
 		if(window.location.toString().indexOf("wordwrap") != -1){
-			document.write("<body><pre class='preWrap'>" + doc + "</pre></body>");
+			document.write("<pre class='preWrap'>" + doc + "</pre>");
 		}else{
-			document.write("<body><pre>" + doc + "</pre></body>");
+			document.write("<pre>" + doc + "</pre>");
 		}
 	}catch(e){
 		var flashParams = {
