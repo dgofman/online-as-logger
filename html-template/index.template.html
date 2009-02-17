@@ -6,13 +6,10 @@
 <body scroll="no">
 <script language="JavaScript" type="text/javascript">
 <!--
-	var loc = unescape(window.location.toString());
-	var pos1 = loc.indexOf("#");
 	document.open("text/html", "replace");
-	if(pos1 != -1){
-		var pos2 =  loc.indexOf("&", pos1);
-		document.title = "Copy Log " + loc.substring(pos1 + 1, pos2);
-		document.write(loc.substring(pos2 + 1));
+	if(opener != null){
+		document.title = opener.document.title;
+		document.write(opener.document.doc);
 	}else{
 		var flashParams = {
 			allowFullScreen:true,
@@ -65,9 +62,8 @@
 	
 	var win;
 	function writeDoc(value, time, doTraverse){
-		var doc;
 		value = value.replace(/^\"|\"$/g, "");
-		doc = "<pre>" + value.replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + "</pre>";
+		var doc = "<pre>" + value.replace(/\</g, "&lt;").replace(/\>/g, "&gt;") + "</pre>";
 		if(doTraverse == true){
 			try{
 				var xmlDoc;
@@ -88,10 +84,11 @@
 		}
 		if(!win || win.closed)
 			win = window.open("about:blank" , "details" + new Date().getTime(), "");
-		win.document.write("<html><title>Log " + time + "</title><body>");
-		win.document.write("<a href='#" + time + "&" + escape(doc) + "' target='_blank' onclick='return true;'>Open in a new window</a>");
+		win.document.write("<html><title>Log " + time + "</title>");
+		win.document.write("<body><a href='#' target='_blank' onclick='return true;'>Open in a new window</a>");
 		win.document.write(doc + "</body></html>");
 		win.document.close();
+		win.document.doc = doc;
 		if (window.focus)
 			win.focus();
 	}
