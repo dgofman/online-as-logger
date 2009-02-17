@@ -82,8 +82,9 @@
 			}catch(e){
 			}
 		}
-		if(!win || win.closed)
-			win = window.open("about:blank" , "details" + new Date().getTime(), "");
+		if(win && !win.closed)
+			win.close();
+		win = window.open("about:blank" , "details" + new Date().getTime(), "");
 		win.document.write("<html><title>Log " + time + "</title>");
 		win.document.write("<body><a href='#' target='_blank' onclick='return true;'>Open in a new window</a>");
 		win.document.write(doc + "</body></html>");
