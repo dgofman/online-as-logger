@@ -7,7 +7,7 @@
 <script language="JavaScript" type="text/javascript">
 <!--
 	document.open("text/html", "replace");
-	if(opener != null){
+	if(opener != null && opener.document.doc != undefined){
 		document.title = opener.document.title;
 		document.write(opener.document.doc);
 	}else{
