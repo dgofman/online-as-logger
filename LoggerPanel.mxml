@@ -54,6 +54,9 @@
 			private var dateFormatter:DateFormatter;
 
 			private function onComplete():void{
+				Security.allowDomain("*");
+				Security.allowInsecureDomain("*");
+
 				dateFormatter = new DateFormatter();
 				dateFormatter.formatString = "H:NN:SS A";
 				logs = new ArrayCollection();
