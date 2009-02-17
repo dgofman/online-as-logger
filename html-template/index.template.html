@@ -19,14 +19,15 @@ white-space: pre-line;
 <script language="JavaScript" type="text/javascript">
 <!--
 	document.open("text/html", "replace");
-	if(opener != null && opener.document.doc != undefined){
+	try{
+		var c = opener.document.doc;
 		document.title = opener.document.title;
 		if(window.location.toString().indexOf("wordwrap") != -1){
-			document.write("<pre class='preWrap'>" + opener.document.doc + "</pre>");
+			document.write("<pre class='preWrap'>" + doc + "</pre>");
 		}else{
-			document.write("<pre>" + opener.document.doc + "</pre>");
+			document.write("<pre>" + doc + "</pre>");
 		}
-	}else{
+	}catch(e){
 		var flashParams = {
 			allowFullScreen:true,
 			align:"middle",
