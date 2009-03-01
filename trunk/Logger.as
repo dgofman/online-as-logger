@@ -120,11 +120,11 @@ package {
 		
 		//Workaround against Adobe bug: https://bugs.adobe.com/jira/browse/SDK-13565
 		public static function connect(resultHandler:Function=null, statusHandler:Function=null):void{
-			var message:String;
 			var ARRAY_DELIMITER:String = "\u00B6";
+			var message:String;
+			var lastStatus:String;
 			var lc:LocalConnection = new LocalConnection();
 			lc.allowDomain("*");
-			var lastStatus:String;
 			lc.client = _loggerEventManager = {$result:resultHandler, $status:statusHandler};
 			lc.addEventListener(StatusEvent.STATUS, 
 				function (event:StatusEvent):void{
