@@ -104,8 +104,10 @@ package {
 					connect();
 				_loggerEventManager.$send(getTimer(), str, logger.level);
 				//Send message to XPanel
-				if(_xpanel_lc == null)
+				if(_xpanel_lc == null){
 					_xpanel_lc = new LocalConnection();
+					_xpanel_lc.allowDomain("*");
+				}
 				if(str && str.length > CHAR_LIMIT)
 					str = str.substring(0, CHAR_LIMIT); 
 				_xpanel_lc.addEventListener(StatusEvent.STATUS, function (event:StatusEvent):void{});
@@ -121,6 +123,7 @@ package {
 			var message:String;
 			var ARRAY_DELIMITER:String = "\u00B6";
 			var lc:LocalConnection = new LocalConnection();
+			lc.allowDomain("*");
 			var lastStatus:String;
 			lc.client = _loggerEventManager = {$result:resultHandler, $status:statusHandler};
 			lc.addEventListener(StatusEvent.STATUS, 
