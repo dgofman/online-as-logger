@@ -87,23 +87,23 @@
 			private static function getInfo(info:Object):Object{
 				switch(info.level){
 					case LOGGER__INFORMATION:
-						info.icon = "infoIcon";
 						info.type = "Information";
+						info.icon = infoIcon;
 						info.color = 0x666666;
 						break;
 					case LOGGER__WARNING:
-						info.icon = "warnIcon";
 						info.type = "Warning";
+						info.icon = warningIcon;
 						info.color = 0x996633;
 						break;
 					case LOGGER__ERROR:
-						info.icon = "errorIcon";
 						info.type = "Error";
+						info.icon = errorIcon;
 						info.color = 0xFF0000;
 						break;
 					default:
-						info.icon = "debugIcon";
 						info.type = "Debug";
+						info.icon = debugIcon;
 						info.color = 0x000000;
 						break;
 				}
@@ -111,7 +111,7 @@
 			}
 
 			public static function getIcon(data:Object):Class{
-				return Application.application.getStyle(getInfo(data).icon);
+				return getInfo(data).icon;
 			}
 
 			public static function getColor(data:Object):uint{
