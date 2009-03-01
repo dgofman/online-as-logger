@@ -17,6 +17,7 @@
 		</node>
 		<node icon="packageIcon" label="sample" expanded="true">
 			<node icon="mxmlIcon" label="FlexLoggerSample.mxml" url="source/sample/FlexLoggerSample.mxml.html"/>
+			<node icon="htmlIcon" label="index.html" url="source/sample/index.html"/>
 		</node>
 		<node icon="actionScriptIcon" label="Logger.as" url="source/Logger.as.html"/>
 		<node icon="htmlIcon" label="Logger.html" url="source/Logger.html"/>
