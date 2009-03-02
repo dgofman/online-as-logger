@@ -170,7 +170,7 @@
 			<mx:DataGridColumn width="20" editable="false" sortable="false">
 				<mx:itemRenderer>
 					<mx:Component>
-						<mx:Image source="{LoggerPanel.traverseIcon}" buttonMode="true" useHandCursor="true" toolTip="Traverse Data" 
+						<mx:Image source="{LoggerPanel.traverseIcon}" buttonMode="true" useHandCursor="true" toolTip="Traverse XML Data" 
 							width="8" height="8" scaleContent="false" horizontalAlign="center" click="ExternalInterface.call('writeDoc', data.message, data.time, true)"/>
 					</mx:Component>
 				</mx:itemRenderer>	
