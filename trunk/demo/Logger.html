@@ -22,10 +22,10 @@ white-space: pre-line;
 	try{
 		var doc = opener.document.doc;
 		document.title = opener.document.title;
-		alert(document.title );
 		if(window.location.toString().indexOf("wordwrap") != -1){
 			document.write("<pre class='preWrap'>" + doc + "</pre>");
 		}else{
+		alert(doc);
 			document.write("<pre>" + doc + "</pre>");
 		}
 	}catch(e){
