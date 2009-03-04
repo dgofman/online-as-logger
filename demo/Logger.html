@@ -28,7 +28,7 @@ white-space: pre-line;
 		}else{
 			document.write("<pre>" + doc + "</pre>");
 		}
-		initLogger = (doc != undefined);
+		initLogger = (doc == undefined);
 	}catch(e){}
 	if(initLogger == true){
 		var flashParams = {
