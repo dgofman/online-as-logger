@@ -20,6 +20,7 @@ white-space: pre-line;
 <!--
 	document.open("text/html", "replace");
 	try{
+	alert(opener);
 		var doc = opener.document.doc;
 		document.title = opener.document.title;
 		if(window.location.toString().indexOf("wordwrap") != -1){
