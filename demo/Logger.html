@@ -15,9 +15,10 @@ white-space: pre-line;
 }
 </style>
 </head>
-<body bgcolor="#ff0000">
+<body>
 <script language="JavaScript" type="text/javascript">
 <!--
+	var initLogger = true;
 	document.open("text/html", "replace");
 	try{
 		var doc = opener.document.doc;
@@ -25,10 +26,11 @@ white-space: pre-line;
 		if(window.location.toString().indexOf("wordwrap") != -1){
 			document.write("<pre class='preWrap'>" + doc + "</pre>");
 		}else{
-		alert(doc);
 			document.write("<pre>" + doc + "</pre>");
 		}
-	}catch(e){
+		initLogger = false;
+	}catch(e){}
+	if(initLogger == true){
 		var flashParams = {
 			allowFullScreen:true,
 			align:"middle",
@@ -36,11 +38,9 @@ white-space: pre-line;
 			bgcolor:"#FFFFFF",
 			allowScriptAccess:"always",
 			type:"application/x-shockwave-flash",
-			src:"http://online-as-logger.googlecode.com/svn/trunk/demo/LoggerPanel.swf?version=1.0"
+			src:"LoggerPanel.swf?version=1.0"
 		};
-
 		var output = flashParamsToString("LoggerPanel", flashParams);
-		alert(output);
 		document.write(output);
 	}
 	document.close();
