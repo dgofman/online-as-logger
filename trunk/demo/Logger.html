@@ -18,19 +18,20 @@ white-space: pre-line;
 <body>
 <script language="JavaScript" type="text/javascript">
 <!--
-	var initLogger = true;
-	document.open("text/html", "replace");
-	try{
-		var doc = opener.document.doc;
-		document.title = opener.document.title;
-		if(window.location.toString().indexOf("wordwrap") != -1){
-			document.write("<pre class='preWrap'>" + doc + "</pre>");
-		}else{
-			document.write("<pre>" + doc + "</pre>");
-		}
-		initLogger = (doc == undefined);
-	}catch(e){}
-	if(initLogger == true){
+	function init(){
+		document.open("text/html", "replace");
+		try{
+			var doc = opener.document.doc;
+			if(doc != undefined){
+				document.title = opener.document.title;
+				if(window.location.toString().indexOf("wordwrap") != -1){
+					document.write("<pre class='preWrap'>" + doc + "</pre>");
+				}else{
+					document.write("<pre>" + doc + "</pre>");
+				}
+				return;
+			}
+		}catch(e){}
 		var flashParams = {
 			allowFullScreen:true,
 			align:"middle",
@@ -43,7 +44,6 @@ white-space: pre-line;
 		var output = flashParamsToString("LoggerPanel", flashParams);
 		document.write(output);
 	}
-	document.close();
 	
 	function flashParamsToString(id, flashParams){
 		var str = 'width="100%" height="100%" ';
@@ -115,6 +115,7 @@ white-space: pre-line;
 				win.focus();
 		}catch(e){ win = null; }
 	}
+	init();
 // -->
 </script>
 </body>
