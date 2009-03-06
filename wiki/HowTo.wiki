@@ -7,7 +7,7 @@ http://online-as-logger.googlecode.com/svn/trunk/demo/Logger.html
 If you want to open AS Logger in the new window copy paste this Javascript:
 
 {{{
-javascript:(function(){var o=window.open('http://online-as-logger.googlecode.com/svn/trunk/demo/Logger.html', 'logger','width=750,height=450,resizable=1')})()
+javascript:(function(){window.open('http://online-as-logger.googlecode.com/svn/trunk/demo/Logger.html','logger','width=750,height=450,resizable=1')})()
 }}}
 
 You can also add this URL for your convenience into browser's Bookmarks (Mozilla Firefox) or Favorites (Internet Explorer).
