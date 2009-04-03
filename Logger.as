@@ -207,23 +207,17 @@ package {
                     
                     str = "(" + classInfo.name + ")";
                     
-                    // refs help us avoid circular reference infinite recursion.
-                    // Each time an object is encoumtered it is pushed onto the
-                    // refs stack so that we can determine if we have visited
-                    // this object already.
                     if (refs == null)
                         refs = new Object();
 
                     // Check to be sure we haven't processed this object before
                     var id:Object = refs[value];
-                    if (id != null)
-                    {
+                    if (id != null){
                         str += "#" + int(id);
                         return str;
                     }
                     
-                    if (value != null)
-                    {
+                    if (value != null){
                         str += "#" + refCount.toString();
                         refs[value] = refCount;
                         refCount++;
@@ -236,8 +230,7 @@ package {
                     
                     // Print all of the variable values.
                     var array:Array = [str];
-                    for (var j:int = 0; j < properties.length; j++)
-                    {
+                    for (var j:int = 0; j < properties.length; j++){
                     	str = "";
                         prop = properties[j];
                         
@@ -247,14 +240,11 @@ package {
                             str += "{";
 
                     
-                        if (isDict)
-                        {
+                        if (isDict){
                             // in dictionaries, recurse on the key, because it can be a complex object
                             str += internalToString(prop, indent, refs,
                                                     namespaceURIs, exclude);
-                        }
-                        else
-                        {
+                        }else{
                             str += prop.toString();
                         }
                         
@@ -269,8 +259,7 @@ package {
                             // print the value
                             str += internalToString(value[prop], indent, refs,
                                                     namespaceURIs, exclude);
-                        }
-                        catch(e:Error){
+                        }catch(e:Error){
                             str += "?";
                         }
                         array.push(str);
@@ -305,16 +294,13 @@ package {
 	        var dynamic:Boolean = false;
 	        var metadataInfo:Object;
 	
-	        if (typeof(obj) == "xml")
-	        {
+	        if (typeof(obj) == "xml"){
 	            className = "XML";
 	            properties = obj.text();
 	            if (properties.length())
 	                propertyNames.push("*");
 	            properties = obj.attributes();
-	        }
-	        else
-	        {
+	        }else{
 	            var classInfo:XML = describeType(obj);
 	            className = classInfo.@name.toString();
 	            classAlias = classInfo.@alias.toString();
@@ -335,31 +321,23 @@ package {
 	        result["dynamic"] = dynamic;
 	        	        
 	        var excludeObject:Object = {};
-	        if (excludes)
-	        {
+	        if (excludes){
 	            n = excludes.length;
 	            for (i = 0; i < n; i++)
-	            {
 	                excludeObject[excludes[i]] = 1;
-	            }
 	        }
 	
 	        //TODO this seems slightly fragile, why not use the 'is' operator?
 	        var isArray:Boolean = (className == "Array");
 	        var isDict:Boolean  = (className == "flash.utils::Dictionary");
 	        
-	        if (isDict)
-	        {
+	        if (isDict){
 	            // dictionaries can have multiple keys of the same type,
 	            // (they can index by reference rather than QName, String, or number),
 	            // which cannot be looked up by QName, so use references to the actual key
 	            for (var key:* in obj)
-	            {
 	                propertyNames.push(key);
-	            }
-	        }
-	        else if (dynamic)
-	        {
+	        }else if (dynamic){
 	            for (var p:String in obj)
 	            {
 	                if (excludeObject[p] != 1)
@@ -381,22 +359,16 @@ package {
 	            numericIndex = isArray && !isNaN(Number(p));
 	        }
 	
-	        if (isArray || isDict || className == "Object")
-	        {
+	        if (isArray || isDict || className == "Object"){
 	            // Do nothing since we've already got the dynamic members
-	        }
-	        else if (className == "XML")
-	        {
+	        }else if (className == "XML"){
 	            n = properties.length();
-	            for (i = 0; i < n; i++)
-	            {
+	            for (i = 0; i < n; i++){
 	                p = properties[i].name();
 	                if (excludeObject[p] != 1)
 	                    propertyNames.push(new QName("", "@" + p));
 	            }
-	        }
-	        else
-	        {
+	        }else{
 	            n = properties.length();
 	            var uris:Array = options.uris;
 	            var uri:String;
@@ -413,36 +385,24 @@ package {
 	                if (!options.includeTransient)
 	                    continue;
 	                
-	                if (uris != null)
-	                {
-	                    if (uris.length == 1 && uris[0] == "*")
-	                    {   
+	                if (uris != null){
+	                    if (uris.length == 1 && uris[0] == "*"){   
 	                        qName = new QName(uri, p);
-	                        try
-	                        {
+	                        try{
 	                            obj[qName]; // access the property to ensure it is supported
 	                            propertyNames.push();
-	                        }
-	                        catch(e:Error)
-	                        {
+	                        }catch(e:Error){
 	                            // don't keep property name 
 	                        }
-	                    }
-	                    else
-	                    {
-	                        for (var j:int = 0; j < uris.length; j++)
-	                        {
+	                    }else{
+	                        for (var j:int = 0; j < uris.length; j++){
 	                            uri = uris[j];
-	                            if (prop.@uri.toString() == uri)
-	                            {
+	                            if (prop.@uri.toString() == uri){
 	                                qName = new QName(uri, p);
-	                                try
-	                                {
+	                                try{
 	                                    obj[qName];
 	                                    propertyNames.push(qName);
-	                                }
-	                                catch(e:Error)
-	                                {
+	                                }catch(e:Error){
 	                                    // don't keep property name 
 	                                }
 	                            }
@@ -452,13 +412,10 @@ package {
 	                else if (uri.length == 0)
 	                {
 	                    qName = new QName(uri, p);
-	                    try
-	                    {
+	                    try{
 	                        obj[qName];
 	                        propertyNames.push(qName);
-	                    }
-	                    catch(e:Error)
-	                    {
+	                    }catch(e:Error){
 	                        // don't keep property name 
 	                    }
 	                }
@@ -471,22 +428,18 @@ package {
 	        // dictionary keys can be indexed by an object reference
 	        // there's a possibility that two keys will have the same toString()
 	        // so we don't want to remove dupes
-	        if (!isDict)
-	        {
+	        if (!isDict){
 	            // for Arrays, etc., on the other hand...
 	            // remove any duplicates, i.e. any items that can't be distingushed by toString()
-	            for (i = 0; i < propertyNames.length - 1; i++)
-	            {
+	            for (i = 0; i < propertyNames.length - 1; i++){
 	                // the list is sorted so any duplicates should be adjacent
 	                // two properties are only equal if both the uri and local name are identical
-	                if (propertyNames[i].toString() == propertyNames[i + 1].toString())
-	                {
+	                if (propertyNames[i].toString() == propertyNames[i + 1].toString()){
 	                    propertyNames.splice(i, 1);
 	                    i--; // back up
 	                }
 	            }
 	        }
-	
 	        return result;
 	    }
 	}
