@@ -150,7 +150,7 @@ package {
 					message += substring;
 				}
 			};
-			_loggerEventManager.$terminate = function():void{
+			_loggerEventManager.$terminate = function(channel:uint):void{
 				try{
 					lc.close();
 					if(_loggerEventManager.$status is Function)
@@ -164,8 +164,8 @@ package {
 					if(_loggerEventManager.$status is Function)
 						_loggerEventManager.$status(channel, "ready", "Connection opened.");
 				} catch (error:ArgumentError) {
-					lc.send(loggerConnectionName + channel, "$terminate");
-					setTimeout(connect, 500, resultHandler, statusHandler);
+					lc.send(loggerConnectionName + channel, "$terminate", channel);
+					setTimeout(connect, 500, resultHandler, statusHandler, channel);
 				}
 			}
 		}
