@@ -4,7 +4,7 @@
 		<![CDATA[
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.events.FaultEvent;
-			
+
 			[Bindable]
 			private var latitude:String;
 			[Bindable]
@@ -37,14 +37,14 @@
 				Logger.error(event.fault.faultString);
 			}
 		]]>
-		
+
 	</mx:Script>
 	<mx:Label text="Enter zip code:"/>
 	<mx:TextInput id="zipcode" text="94040" maxChars="5"/>
 	<mx:Label text="Number of days:"/>
 	<mx:TextInput id="numDays" text="5" maxChars="2"/>
 	<mx:Button label="Submit" click="WS.LatLonListZipCode.send()"/>
-	
+
 	<mx:WebService id="WS" wsdl="http://www.weather.gov/forecasts/xml/DWMLgen/wsdl/ndfdXML.wsdl"
 		useProxy="false" fault="onFault(event)" result="onResult(event)" >
 		
