@@ -72,7 +72,7 @@
 							dg.verticalScrollPosition = dg.maxVerticalScrollPosition;
 					}
 				};
-				function statusHandler(status:String, message:String):void{
+				function statusHandler(chanel:uint, status:String, message:String):void{
 						logs.addItem({level:Logger.LOGGER_INFORMATION.level, ftime:getTimer(), 
 						time:dateFormatter.format(new Date()), message:message});
 					dg.verticalScrollPosition = dg.maxVerticalScrollPosition;
