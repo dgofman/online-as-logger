@@ -79,7 +79,7 @@ package {
 		}
 		
 		public static function send(chanel:uint, ... args):void{
-			_loggerEventManager.$send(chanel, (args is Array ? args.join(ARRAY_DELIMITER) : args));
+			_loggerEventManager.$send(chanel, args);
 		}
 				
 		private function js_trace(type:String="log", o:Object=null):void{
@@ -99,7 +99,7 @@ package {
 				//Send message to Flex Logger
 				if(_loggerEventManager == null)
 					connect();
-				_loggerEventManager.$send(chanel, getTimer(), (o is Array ? o.join(ARRAY_DELIMITER) : str), logger.level);
+				_loggerEventManager.$send(chanel, [getTimer(), str, logger.level]);
 				//Send message to FireBug console
 				ExternalInterface.call("console." + logger.type, formatDate(new Date()) + "  " + str);
 				//Send message to XPanel
@@ -131,8 +131,9 @@ package {
 					lastStatus = event.level;
 				}
 			);
-			_loggerEventManager.$send = function(chanel:uint, msg:String):void{
+			_loggerEventManager.$send = function(chanel:uint, o:*):void{
 				lc.send(loggerConnectionName + chanel, "$progress", "INIT_STATUS");
+				var msg:String = (o is Array ? o.join(ARRAY_DELIMITER) : String(o))
 				while(msg && msg.length){
 					lc.send(loggerConnectionName + chanel, "$progress", "SENDING_STATUS", msg.substring(0, Logger.CHAR_LIMIT));
 					msg = msg.substring(Logger.CHAR_LIMIT);
