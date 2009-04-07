@@ -89,17 +89,17 @@ package {
 			ExternalInterface.call("console." + type, formatDate(new Date()) + "  " + o);
 		}
 
-		public static function send(chanel:uint, ... args):void{
-			_loggerEventManager.$send(chanel, args);
+		public static function send(channel:uint, ... args):void{
+			_loggerEventManager.$send(channel, args);
 		}
 
-		private static function _send(logger:Logger, o:Object, chanel:uint=0):void{
+		private static function _send(logger:Logger, o:Object, channel:uint=0):void{
 			try{
 				var str:String = (typeof o == "xml" ? o.toXMLString() : toString(o));
 				//Send message to Flex Logger
 				if(_loggerEventManager == null)
 					connect();
-				_loggerEventManager.$send(chanel, [getTimer(), str, logger.level]);
+				_loggerEventManager.$send(channel, [getTimer(), str, logger.level]);
 				//Send message to FireBug console
 				ExternalInterface.call("console." + logger.type, formatDate(new Date()) + "  " + str);
 				//Send message to XPanel
@@ -118,7 +118,7 @@ package {
 		}
 						
 		//Workaround against Adobe bug: https://bugs.adobe.com/jira/browse/SDK-13565
-		public static function connect(resultHandler:Function=null, statusHandler:Function=null, chanel:uint=0):void{
+		public static function connect(resultHandler:Function=null, statusHandler:Function=null, channel:uint=0):void{
 			var message:String;
 			var lastStatus:String;
 			var lc:LocalConnection = new LocalConnection();
@@ -131,14 +131,14 @@ package {
 					lastStatus = event.level;
 				}
 			);
-			_loggerEventManager.$send = function(chanel:uint, o:*):void{
-				lc.send(loggerConnectionName + chanel, "$progress", "INIT_STATUS");
+			_loggerEventManager.$send = function(channel:uint, o:*):void{
+				lc.send(loggerConnectionName + channel, "$progress", "INIT_STATUS");
 				var msg:String = (o is Array ? o.join(ARRAY_DELIMITER) : String(o))
 				while(msg && msg.length){
-					lc.send(loggerConnectionName + chanel, "$progress", "SENDING_STATUS", msg.substring(0, Logger.CHAR_LIMIT));
+					lc.send(loggerConnectionName + channel, "$progress", "SENDING_STATUS", msg.substring(0, Logger.CHAR_LIMIT));
 					msg = msg.substring(Logger.CHAR_LIMIT);
 				}
-				lc.send(loggerConnectionName + chanel, "$progress", "COMPLETE_STATUS");
+				lc.send(loggerConnectionName + channel, "$progress", "COMPLETE_STATUS");
 			};
 			_loggerEventManager.$progress = function(status:String, substring:String=null):void {
 				if(status == "INIT_STATUS"){
@@ -154,17 +154,17 @@ package {
 				try{
 					lc.close();
 					if(_loggerEventManager.$status is Function)
-						_loggerEventManager.$status(chanel, "terminate", "Connection terminated: Connection name is already being used by another SWF");
+						_loggerEventManager.$status(channel, "terminate", "Connection terminated: Connection name is already being used by another SWF");
 				}catch(error:Error){trace(error)}
 			};
 		
 			if(resultHandler != null){ 
 				try{
-					lc.connect(loggerConnectionName + chanel);
+					lc.connect(loggerConnectionName + channel);
 					if(_loggerEventManager.$status is Function)
-						_loggerEventManager.$status(chanel, "ready", "Connection opened.");
+						_loggerEventManager.$status(channel, "ready", "Connection opened.");
 				} catch (error:ArgumentError) {
-					lc.send(loggerConnectionName + chanel, "$terminate");
+					lc.send(loggerConnectionName + channel, "$terminate");
 					setTimeout(connect, 500, resultHandler, statusHandler);
 				}
 			}
