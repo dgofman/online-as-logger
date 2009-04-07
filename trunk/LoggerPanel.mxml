@@ -36,7 +36,7 @@
 			private var isWarn:Boolean = true;
 			[Bindable]
 			private var isError:Boolean = true;
-			
+
 			[Embed(source="/assets/exit.png")]      public static const exitIcon:Class;
 			[Embed(source="/assets/reconnect.png")] public static const reconnectIcon:Class;
 			[Embed(source="/assets/lunch.png")]     public static const lunchIcon:Class;
@@ -62,7 +62,7 @@
 				logs = new ArrayCollection();
 				reconnect();
 			}
-			
+
 			private function reconnect():void{
 				function resultHandler(time:String, msg:String, level:int):void{
 					if(isListen && ((level == LOGGER__DEBUG && isDebug) || (level == LOGGER__WARNING && isWarn) ||
@@ -79,7 +79,7 @@
 				};
 				Logger.connect(resultHandler, statusHandler);
 			}
-				
+
 			private function closeApp():void{
 				navigateToURL(new URLRequest("javascript:window.close();void(0);"),"_self");
 			}
@@ -124,7 +124,6 @@
 		]]>
 	</mx:Script>
 	<mx:HBox width="100%" horizontalGap="2">
-
 		<mx:Button toolTip="Close" icon="{exitIcon}" height="25" click="closeApp()"/>
 		<mx:Button toolTip="Reconnect" icon="{reconnectIcon}" height="25" click="reconnect()"/>
 		<mx:Button toolTip="Listen Trace ({isListen ? toggleOn : toggleOff})" icon="{lunchIcon}" toggle="true" selected="true" height="25" click="{isListen = isListen != true}"/>
