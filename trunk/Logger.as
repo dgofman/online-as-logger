@@ -33,7 +33,7 @@ package {
 		public static const LOGGER_WARNING:Logger     = new Logger(0x04, "warn");
 		public static const LOGGER_ERROR:Logger       = new Logger(0x08, "error");
 				
-		public static const CHAR_LIMIT:uint = 40950; //LocalConnection error: 2084 The AMF encoding of the arguments cannot exceed 40K. 
+		public static const CHAR_LIMIT:uint = 40000; //LocalConnection error: 2084 The AMF encoding of the arguments cannot exceed 40K. 
 		
 		private static var _js_bridge_initialized:Boolean = false;
 		
