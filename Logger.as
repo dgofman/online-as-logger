@@ -78,10 +78,6 @@ package {
 			_send(LOGGER_DEBUG, (args is Array ? args.join(", ") : args));
 		}
 		
-		public static function send(chanel:uint, ... args):void{
-			_loggerEventManager.$send(chanel, args);
-		}
-				
 		private function js_trace(type:String="log", o:Object=null):void{
 			var loggers:Array = [LOGGER_DEBUG, LOGGER_INFORMATION, LOGGER_WARNING, LOGGER_ERROR];
 			for(var i:uint = 0; i < loggers.length; i++){
@@ -91,6 +87,10 @@ package {
 				}
 			}
 			ExternalInterface.call("console." + type, formatDate(new Date()) + "  " + o);
+		}
+
+		public static function send(chanel:uint, ... args):void{
+			_loggerEventManager.$send(chanel, args);
 		}
 
 		private static function _send(logger:Logger, o:Object, chanel:uint=0):void{
