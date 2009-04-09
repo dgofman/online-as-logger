@@ -291,7 +291,7 @@ package {
 			}
 		}
 		
-		public static function getClassInfo(obj:Object,
+		private static function getClassInfo(obj:Object,
                                         excludes:Array = null,
                                         options:Object = null):Object
 	    {   
