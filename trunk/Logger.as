@@ -139,7 +139,7 @@ package {
 						var channel:int = event.target.client.$channel;
 						var request:Object = event.target.client.request;
 						if(request.channel != EXTERNAL_LOG_CHANNEL)				
-							trace("Warning Undeliverable Messages: " + channel + "->" + request.channel + "\n" + request.params);
+							trace("Warning Undeliverable Messages: " + channel + " -> " + request.channel + "\n" + request.params);
 					}
 					lastStatus = event.level;
 				}
