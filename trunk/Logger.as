@@ -10,10 +10,11 @@ package {
 	import flash.events.StatusEvent;
 	import flash.external.ExternalInterface;
 	import flash.net.LocalConnection;
+	import flash.utils.clearInterval;
 	import flash.utils.describeType;
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.getTimer;
-	import flash.utils.setTimeout;
+	import flash.utils.setInterval;
 	import flash.xml.XMLNode;
 
 	public class Logger extends Sprite
@@ -22,7 +23,7 @@ package {
 		private var _type:String;
 	
 		private static var _xpanel_lc:LocalConnection;
-		private static var _loggerEventManager:Object;
+		private static var _localConnectionClient:Object;
 
 		private static const xpanelConnectionName:String = "_xpanel1";
 		private static const loggerConnectionName:String = "_logger";
@@ -31,11 +32,14 @@ package {
 		public static const LOGGER_INFORMATION:Logger = new Logger(0x02, "info");
 		public static const LOGGER_WARNING:Logger     = new Logger(0x04, "warn");
 		public static const LOGGER_ERROR:Logger       = new Logger(0x08, "error");
-				
+		
+		public static const REMOTE_LOG_CHANNEL:int =  0; 
+		
 		private static const CHAR_LIMIT:uint = 40000; //LocalConnection error: 2084 The AMF encoding of the arguments cannot exceed 40K. 
 		private static const ARRAY_DELIMITER:String = "\u00B6";
 		
 		private static var _js_bridge_initialized:Boolean = false;
+		private static var _connectionInterval:Number;
 		
 		function Logger(level:int=-1, type:String=null){
 			if(_js_bridge_initialized == false && ExternalInterface.available){
@@ -90,16 +94,17 @@ package {
 		}
 
 		public static function send(channel:uint, ... args):void{
-			_loggerEventManager.$send(channel, args);
+			if(_localConnectionClient == null)
+				_localConnectionClient = _connect(-1).client;
+			_localConnectionClient.$send(args, channel);
 		}
 
-		private static function _send(logger:Logger, o:Object, channel:uint=0):void{
+		private static function _send(logger:Logger, o:Object):void{
 			try{
 				var str:String = (typeof o == "xml" ? o.toXMLString() : toString(o));
 				//Send message to Flex Logger
-				if(_loggerEventManager == null)
-					connect();
-				_loggerEventManager.$send(channel, [getTimer(), str, logger.level]);
+				if(_localConnectionClient != null)
+					_localConnectionClient.$send([getTimer(), str, logger.level], REMOTE_LOG_CHANNEL);
 				//Send message to FireBug console
 				ExternalInterface.call("console." + logger.type, formatDate(new Date()) + "  " + str);
 				//Send message to XPanel
@@ -118,56 +123,69 @@ package {
 		}
 						
 		//Workaround against Adobe bug: https://bugs.adobe.com/jira/browse/SDK-13565
-		public static function connect(resultHandler:Function=null, statusHandler:Function=null, channel:uint=0):void{
+		public static function connect(resultHandler:Function=null, statusHandler:Function=null, channel:uint=REMOTE_LOG_CHANNEL):LocalConnection{
+			return _connect(channel, resultHandler, statusHandler);
+		}
+		
+		private static function _connect(channel:int, resultHandler:Function=null, statusHandler:Function=null):LocalConnection{
 			var message:String;
 			var lastStatus:String;
 			var lc:LocalConnection = new LocalConnection();
 			lc.allowDomain("*");
-			lc.client = _loggerEventManager = {$result:resultHandler, $status:statusHandler};
+			lc.client = {$result:resultHandler, $status:statusHandler, $channel:channel};
 			lc.addEventListener(StatusEvent.STATUS, 
 				function (event:StatusEvent):void{
-					if(lastStatus != event.level && event.level == "error")
-						trace("Error: Connection corrupted or disconnected");
+					if(lastStatus != event.level && event.level == "error" && 
+								event.target.client.hasOwnProperty('request')){
+						var channel:int = event.target.client.$channel;
+						var request:Object = event.target.client.request;
+						if(request.channel != REMOTE_LOG_CHANNEL)				
+							trace("Warning Undeliverable Messages: " + channel + "->" + request.channel + "\n" + request.params);
+					}
 					lastStatus = event.level;
 				}
 			);
-			_loggerEventManager.$send = function(channel:uint, o:*):void{
+			lc.client.$send = function(params:*, channel:int):void{
+				var msg:String = (params is Array ? params.join(ARRAY_DELIMITER) : String(params));
+				lc.client.request = {channel:channel, params:params}
 				lc.send(loggerConnectionName + channel, "$progress", "INIT_STATUS");
-				var msg:String = (o is Array ? o.join(ARRAY_DELIMITER) : String(o))
 				while(msg && msg.length){
 					lc.send(loggerConnectionName + channel, "$progress", "SENDING_STATUS", msg.substring(0, Logger.CHAR_LIMIT));
 					msg = msg.substring(Logger.CHAR_LIMIT);
 				}
 				lc.send(loggerConnectionName + channel, "$progress", "COMPLETE_STATUS");
 			};
-			_loggerEventManager.$progress = function(status:String, substring:String=null):void {
+			lc.client.$progress = function(status:String, substring:String=null):void {
 				if(status == "INIT_STATUS"){
 					message = "";
 				}else if(status == "COMPLETE_STATUS"){
 					var parameters:Array = message.split(ARRAY_DELIMITER);
-					_loggerEventManager.$result.apply(null, parameters);
+					lc.client.$result.apply(null, parameters);
 				}else if(status == "SENDING_STATUS"){
 					message += substring;
 				}
 			};
-			_loggerEventManager.$terminate = function(channel:uint):void{
+			lc.client.$terminate = function(channel:int):void{
 				try{
 					lc.close();
-					if(_loggerEventManager.$status is Function)
-						_loggerEventManager.$status(channel, "terminate", "Connection terminated: Connection name is already being used by another SWF");
+					if(lc.client.$status is Function)
+						lc.client.$status(channel, "terminate", "Connection terminated: Connection name is already being used by another SWF");
 				}catch(error:Error){trace(error)}
 			};
 		
 			if(resultHandler != null){ 
 				try{
+					clearInterval(_connectionInterval);
 					lc.connect(loggerConnectionName + channel);
-					if(_loggerEventManager.$status is Function)
-						_loggerEventManager.$status(channel, "ready", "Connection opened.");
+					if(lc.client.$status is Function)
+						lc.client.$status(channel, "ready", "Connection opened.");
+					_localConnectionClient = lc.client;
 				} catch (error:ArgumentError) {
 					lc.send(loggerConnectionName + channel, "$terminate", channel);
-					setTimeout(connect, 500, resultHandler, statusHandler, channel);
+					_connectionInterval = setInterval(_connect, 500, channel, resultHandler, statusHandler);
 				}
 			}
+			return lc;
 		}
 		
 		//Utils
