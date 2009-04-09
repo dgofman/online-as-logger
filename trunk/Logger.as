@@ -33,7 +33,7 @@ package {
 		public static const LOGGER_WARNING:Logger     = new Logger(0x04, "warn");
 		public static const LOGGER_ERROR:Logger       = new Logger(0x08, "error");
 		
-		public static const REMOTE_LOG_CHANNEL:int =  0; 
+		public static const EXTERNAL_LOG_CHANNEL:int =  0; 
 		
 		private static const CHAR_LIMIT:uint = 40000; //LocalConnection error: 2084 The AMF encoding of the arguments cannot exceed 40K. 
 		private static const ARRAY_DELIMITER:String = "\u00B6";
@@ -93,7 +93,7 @@ package {
 			ExternalInterface.call("console." + type, formatDate(new Date()) + "  " + o);
 		}
 
-		public static function send(channel:uint, ... args):void{
+		public static function send(channel:uint, ...args):void{
 			if(_localConnectionClient == null)
 				_localConnectionClient = _connect(-1).client;
 			_localConnectionClient.$send(args, channel);
@@ -103,8 +103,7 @@ package {
 			try{
 				var str:String = (typeof o == "xml" ? o.toXMLString() : toString(o));
 				//Send message to Flex Logger
-				if(_localConnectionClient != null)
-					_localConnectionClient.$send([getTimer(), str, logger.level], REMOTE_LOG_CHANNEL);
+				send(EXTERNAL_LOG_CHANNEL, getTimer(), str, logger.level);
 				//Send message to FireBug console
 				ExternalInterface.call("console." + logger.type, formatDate(new Date()) + "  " + str);
 				//Send message to XPanel
@@ -121,9 +120,9 @@ package {
 				// ignored.
 			}
 		}
-						
-		//Workaround against Adobe bug: https://bugs.adobe.com/jira/browse/SDK-13565
-		public static function connect(resultHandler:Function=null, statusHandler:Function=null, channel:uint=REMOTE_LOG_CHANNEL):LocalConnection{
+		
+		//Sets response listener. If channel equals to EXTERNAL_LOG_CHANNEL (0), class will received all log messages passed from external application. 
+		public static function connect(resultHandler:Function=null, statusHandler:Function=null, channel:uint=EXTERNAL_LOG_CHANNEL):LocalConnection{
 			return _connect(channel, resultHandler, statusHandler);
 		}
 		
@@ -139,12 +138,13 @@ package {
 								event.target.client.hasOwnProperty('request')){
 						var channel:int = event.target.client.$channel;
 						var request:Object = event.target.client.request;
-						if(request.channel != REMOTE_LOG_CHANNEL)				
+						if(request.channel != EXTERNAL_LOG_CHANNEL)				
 							trace("Warning Undeliverable Messages: " + channel + "->" + request.channel + "\n" + request.params);
 					}
 					lastStatus = event.level;
 				}
 			);
+			//Workaround against Adobe bug: https://bugs.adobe.com/jira/browse/SDK-13565
 			lc.client.$send = function(params:*, channel:int):void{
 				var msg:String = (params is Array ? params.join(ARRAY_DELIMITER) : String(params));
 				lc.client.request = {channel:channel, params:params}
