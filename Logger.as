@@ -24,7 +24,11 @@ package {
 	
 		private static var _xpanel_lc:LocalConnection;
 		private static var _localConnection:LocalConnection;
-
+		
+		public static var REMOTE_MESSAGE_OUTPUT:Boolean = true;
+		public static var XPANEL_CONSOLE_OUTPUT:Boolean = true;
+		public static var FIREBUG_CONSOLE_OUTPUT:Boolean = true;
+		
 		private static const xpanelConnectionName:String = "_xpanel1";
 		private static const loggerConnectionName:String = "_logger";
 		
@@ -107,18 +111,22 @@ package {
 			try{
 				var str:String = (typeof o == "xml" ? o.toXMLString() : toString(o));
 				//Send message to Flex Logger
-				send(EXTERNAL_LOG_CHANNEL, getTimer(), str, logger.level);
+				if(REMOTE_MESSAGE_OUTPUT == true)
+					send(EXTERNAL_LOG_CHANNEL, getTimer(), str, logger.level);
 				//Send message to FireBug console
-				ExternalInterface.call("console." + logger.type, formatDate(new Date()) + "  " + str);
+				if(FIREBUG_CONSOLE_OUTPUT == true)
+					ExternalInterface.call("console." + logger.type, formatDate(new Date()) + "  " + str);
 				//Send message to XPanel
-				if(_xpanel_lc == null){
-					_xpanel_lc = new LocalConnection();
-					_xpanel_lc.allowDomain("*");
+				if(XPANEL_CONSOLE_OUTPUT == true){
+					if(_xpanel_lc == null){
+						_xpanel_lc = new LocalConnection();
+						_xpanel_lc.allowDomain("*");
+					}
+					if(str && str.length > CHAR_LIMIT)
+						str = str.substring(0, CHAR_LIMIT); 
+					_xpanel_lc.addEventListener(StatusEvent.STATUS, function (event:StatusEvent):void{});
+					_xpanel_lc.send(xpanelConnectionName, "dispatchMessage", getTimer(), str, logger.level);
 				}
-				if(str && str.length > CHAR_LIMIT)
-					str = str.substring(0, CHAR_LIMIT); 
-				_xpanel_lc.addEventListener(StatusEvent.STATUS, function (event:StatusEvent):void{});
-				_xpanel_lc.send(xpanelConnectionName, "dispatchMessage", getTimer(), str, logger.level);
 			}
 			catch (err:Error){
 				// ignored.
