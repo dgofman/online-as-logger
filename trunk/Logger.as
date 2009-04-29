@@ -39,7 +39,7 @@ package {
 		
 		public static const EXTERNAL_LOG_CHANNEL:int =  0; 
 		
-		private static const CHAR_LIMIT:uint = 40000; //LocalConnection error: 2084 The AMF encoding of the arguments cannot exceed 40K. 
+		private static const CHAR_LIMIT:uint = 37400; //LocalConnection error: 2084 The AMF encoding of the arguments cannot exceed 40K. 
 		private static const ARRAY_DELIMITER:String = "\u00B6";
 		
 		private static var _js_bridge_initialized:Boolean = false;
@@ -102,9 +102,13 @@ package {
 		}
 
 		public static function send(channel:uint, ...args):void{
-			if(_localConnection == null)
-				_localConnection = _connect(-1);
-			_localConnection.client.$send(args, channel);
+			try{
+				if(_localConnection == null)
+					_localConnection = _connect(-1);
+				_localConnection.client.$send(args, channel);
+			}catch(e:Error){
+				trace(e);
+			}
 		}
 
 		private static function _send(logger:Logger, o:Object):void{
@@ -122,10 +126,12 @@ package {
 						_xpanel_lc = new LocalConnection();
 						_xpanel_lc.allowDomain("*");
 					}
-					if(str && str.length > CHAR_LIMIT)
-						str = str.substring(0, CHAR_LIMIT); 
 					_xpanel_lc.addEventListener(StatusEvent.STATUS, function (event:StatusEvent):void{});
-					_xpanel_lc.send(xpanelConnectionName, "dispatchMessage", getTimer(), str, logger.level);
+					while(str && str.length){
+						var truncate:String = str.substring(0, Logger.CHAR_LIMIT);
+						_xpanel_lc.send(xpanelConnectionName, "dispatchMessage", getTimer(), truncate, logger.level);
+						str = str.substring(Logger.CHAR_LIMIT);
+					}
 				}
 			}
 			catch (err:Error){
@@ -165,7 +171,8 @@ package {
 				lc.client.request = {channel:channel, params:params}
 				lc.send(loggerConnectionName + channel, "$progress", "INIT_STATUS");
 				while(msg && msg.length){
-					lc.send(loggerConnectionName + channel, "$progress", "SENDING_STATUS", msg.substring(0, Logger.CHAR_LIMIT));
+					var truncate:String = msg.substring(0, Logger.CHAR_LIMIT);
+					lc.send(loggerConnectionName + channel, "$progress", "SENDING_STATUS", truncate);
 					msg = msg.substring(Logger.CHAR_LIMIT);
 				}
 				lc.send(loggerConnectionName + channel, "$progress", "COMPLETE_STATUS");
