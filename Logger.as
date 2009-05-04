@@ -214,7 +214,7 @@ package {
 		private static var refCount:int = 0;
 		
 		private static function formatDate(date:Date):String{
-			return date.hours + '-' + date.minutes + '-' + date.seconds;
+			return date.hours + ':' + date.minutes + ':' + date.seconds;
 		}
 		
 		private static function toString(value:Object):String{
